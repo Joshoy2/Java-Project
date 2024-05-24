@@ -4,15 +4,15 @@ public class App {
     public static void main(String[] args) throws Exception {
         System.out.println("\n\n");
 
-        System.out.print("Options:\n1: Tic-Tac-Toe\n2: Graph\n  Enter a number: ");
+        System.out.print("Options:\n1: Tic-Tac-Toe\n2: Graph\nEnter a number: ");
         String user_option = System.console().readLine();
 
         int option = Integer.parseInt(user_option);
         if(option == 1){
-            System.out.println("\nTic-Tac-Toe:\n");
+            System.out.println("\nTic-Tac-Toe:");
             tic_tac_toe();
         } else if(option == 2){
-            System.out.println("\nGraph\n\n");
+            System.out.println("\nGraph:\n");
             graph();
         } else {
             System.out.println("\nTry again");
@@ -22,12 +22,23 @@ public class App {
     }
 
     public static void tic_tac_toe() throws Exception {
-        
+        //playing instructions
         String instruction_field = " 1 | 2 | 3 \n-----------\n 4 | 5 | 6 \n-----------\n 7 | 8 | 9 ";
-        System.out.println("The field: \n"+instruction_field);
+        System.out.println("\nThe playing field: \n"+instruction_field);
+
+        //variables
         String[] player_options = {" "," "," "," "," "," "," "," "," "};
         String active_playing_field = " "+player_options[0]+" | "+player_options[1]+" | "+player_options[2]+" \n-----------\n "+player_options[3]+" | "+player_options[4]+" | "+player_options[5]+" \n-----------\n "+player_options[6]+" | "+player_options[7]+" | "+player_options[8]+" ";
         String used_nums = "";
+
+        //win vars
+        String[] possible_wins = {"123", "456", "789", "147", "258", "369", "159", "357"};
+        String player_nums = "";
+        String bot_nums = "";
+
+        for(String possibility : possible_wins) {
+            
+        }
 
         for(int i= 0; i< 5; i++){
             //asks user for input
@@ -52,7 +63,7 @@ public class App {
             
             //prints out new field
             active_playing_field = " "+player_options[0]+" | "+player_options[1]+" | "+player_options[2]+" \n-----------\n "+player_options[3]+" | "+player_options[4]+" | "+player_options[5]+" \n-----------\n "+player_options[6]+" | "+player_options[7]+" | "+player_options[8]+" \n";
-            System.out.println(active_playing_field);
+            System.out.println("\n"+active_playing_field);
         
             //automated opponent chooses answer
             Random rand = new Random();
@@ -75,7 +86,7 @@ public class App {
 
             //prints out new field again
             active_playing_field = " "+player_options[0]+" | "+player_options[1]+" | "+player_options[2]+" \n-----------\n "+player_options[3]+" | "+player_options[4]+" | "+player_options[5]+" \n-----------\n "+player_options[6]+" | "+player_options[7]+" | "+player_options[8]+" \n";
-            System.out.println(active_playing_field);
+            System.out.println("\033[A\033[A\033[A\033[A\033[A\033[A"+active_playing_field);
         }
     }
 
@@ -89,4 +100,3 @@ public class App {
         System.out.println(teest);
     }
 }
-
