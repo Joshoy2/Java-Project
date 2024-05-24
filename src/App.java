@@ -45,12 +45,9 @@ public class App {
 
             //user option validity check
             if(used_nums.contains(user_input)){
-                while(true){
+                while(used_nums.contains(user_input)){
                     System.out.print("That spot is already taken. Try again: ");
                     user_input = System.console().readLine();
-                    if(!used_nums.contains(user_input)){
-                        break;
-                    }
                 }
             }
 
@@ -93,7 +90,7 @@ public class App {
             }
             
             //automated opponent thinks :D
-            Thread.sleep(1500);
+            Thread.sleep(1000);
             
             //adds automated opponent input to field and "used_nums"
             used_nums += random_answer_str;
@@ -123,12 +120,27 @@ public class App {
     }
 
     public static void graph() throws Exception {
-        String[] Graph_fields;
+        int graph_size = 25;
+        System.out.print("Size of Graph: ");
+        graph_size = Integer.parseInt(System.console().readLine());
+        String graph[][] = {{"#1","#2","#3","#4"}, {"+1","+2","+3","+4"}, {"-1","-2","-3","-4"}}; 
 
-        System.out.print("Enter something:");
-        String input = System.console().readLine();
+        System.out.println(graph[0][1]);
 
-        int teest = Integer.parseInt(input);
-        System.out.println(teest);
+        for(int i= 0; i<2; i++){
+            graph[0][i] = "%"+Integer.toString(i);
+        }
+
+        System.out.println(graph[0][1]);
+
+        //for(int y_axis= 0; y_axis< graph_size; y_axis++){
+        //    for(int x_axis= 0; x_axis< graph_size; x_axis++){
+        //        graph[0][x_axis] = "#1";
+        //    }
+        //}
+
+        //for (String[] strings : graph) {
+        //    System.out.println(strings);
+        //}
     }
 }
