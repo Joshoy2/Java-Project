@@ -1,6 +1,98 @@
 import java.util.Random;
+//import javax.script.ScriptEngineManager;
+//import javax.script.ScriptEngine;
+//import javax.script.ScriptException;
+
 
 public class App {
+
+    public static double eval(final String str) {
+        return new Object() {
+            int pos = -1, ch;
+            
+            void nextChar() {
+                ch = (++pos < str.length()) ? str.charAt(pos) : -1;
+            }
+            
+            boolean eat(int charToEat) {
+                while (ch == ' ') nextChar();
+                if (ch == charToEat) {
+                    nextChar();
+                    return true;
+                }
+                return false;
+            }
+            
+            double parse() {
+                nextChar();
+                double x = parseExpression();
+                if (pos < str.length()) throw new RuntimeException("Unexpected: " + (char)ch);
+                return x;
+            }
+            
+            // Grammar:
+            // expression = term | expression `+` term | expression `-` term
+            // term = factor | term `*` factor | term `/` factor
+            // factor = `+` factor | `-` factor | `(` expression `)` | number
+            //        | functionName `(` expression `)` | functionName factor
+            //        | factor `^` factor
+            
+            double parseExpression() {
+                double x = parseTerm();
+                for (;;) {
+                    if      (eat('+')) x += parseTerm(); // addition
+                    else if (eat('-')) x -= parseTerm(); // subtraction
+                    else return x;
+                }
+            }
+            
+            double parseTerm() {
+                double x = parseFactor();
+                for (;;) {
+                    if      (eat('*')) x *= parseFactor(); // multiplication
+                    else if (eat('/')) x /= parseFactor(); // division
+                    else return x;
+                }
+            }
+            
+            double parseFactor() {
+                if (eat('+')) return +parseFactor(); // unary plus
+                if (eat('-')) return -parseFactor(); // unary minus
+                
+                double x;
+                int startPos = this.pos;
+                if (eat('(')) { // parentheses
+                    x = parseExpression();
+                    if (!eat(')')) throw new RuntimeException("Missing ')'");
+                } else if ((ch >= '0' && ch <= '9') || ch == '.') { // numbers
+                    while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
+                    x = Double.parseDouble(str.substring(startPos, this.pos));
+                } else if (ch >= 'a' && ch <= 'z') { // functions
+                    while (ch >= 'a' && ch <= 'z') nextChar();
+                    String func = str.substring(startPos, this.pos);
+                    if (eat('(')) {
+                        x = parseExpression();
+                        if (!eat(')')) throw new RuntimeException("Missing ')' after argument to " + func);
+                    } else {
+                        x = parseFactor();
+                    }
+                    if (func.equals("sqrt")) x = Math.sqrt(x);
+                    else if (func.equals("sin")) x = Math.sin(Math.toRadians(x));
+                    else if (func.equals("cos")) x = Math.cos(Math.toRadians(x));
+                    else if (func.equals("tan")) x = Math.tan(Math.toRadians(x));
+                    else throw new RuntimeException("Unknown function: " + func);
+                } else {
+                    throw new RuntimeException("Unexpected: " + (char)ch);
+                }
+                
+                if (eat('^')) x = Math.pow(x, parseFactor()); // exponentiation
+                
+                return x;
+            }
+        }.parse();
+    }
+
+
     public static void main(String[] args) throws Exception {
         System.out.println("\n\n");
 
@@ -122,25 +214,41 @@ public class App {
     public static void graph() throws Exception {
         int graph_size = 25;
         System.out.print("Size of Graph: ");
-        graph_size = Integer.parseInt(System.console().readLine());
-        String graph[][] = {{"#1","#2","#3","#4"}, {"+1","+2","+3","+4"}, {"-1","-2","-3","-4"}}; 
-
-        System.out.println(graph[0][1]);
-
-        for(int i= 0; i<2; i++){
-            graph[0][i] = "%"+Integer.toString(i);
+        graph_size = Integer.parseInt(System.console().readLine()) + 1;
+        String graph[][] = new String[graph_size][graph_size];
+        for(int y= 0; y<graph_size; y++){
+            for(int x= 0; x<graph_size; x++){
+                if(x==0 && y==0){
+                    graph[x][y] = "0+";
+                } else if(x==0) {
+                    graph[x][y] = "--";
+                } else if(y==0) {
+                    graph[x][y] = " |";
+                } else {
+                    graph[x][y] = "@@";
+                }
+            }
         }
 
-        System.out.println(graph[0][1]);
+        for(int x= graph_size-1; x>=0; x--){
+            for(int y= 0; y<graph_size; y++){
+                System.out.print(graph[x][y]);
+            }
+            System.out.println();
+        }
 
-        //for(int y_axis= 0; y_axis< graph_size; y_axis++){
-        //    for(int x_axis= 0; x_axis< graph_size; x_axis++){
-        //        graph[0][x_axis] = "#1";
-        //    }
-        //}
 
-        //for (String[] strings : graph) {
-        //    System.out.println(strings);
-        //}
+        System.out.print("\nWhere do you want to place your X? ");
+        String user_equation = System.console().readLine();
+
+
+        System.out.println("\n\n\n");
+        
+        
+
+        for(int x= 0; x<graph_size; x++){
+            String user_equation2 = user_equation.replace("user_equation", "user_equation");
+            System.out.println(eval(user_equation));
+        }
     }
 }
