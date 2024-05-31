@@ -225,7 +225,7 @@ public class App {
                 } else if(y==0) {
                     graph[x][y] = " |";
                 } else {
-                    graph[x][y] = "@@";
+                    graph[x][y] = "  ";
                 }
             }
         }
@@ -238,17 +238,28 @@ public class App {
         }
 
 
-        System.out.print("\nWhere do you want to place your X? ");
+        System.out.print("\nYour equation: Y= ");
         String user_equation = System.console().readLine();
 
-
-        System.out.println("\n\n\n");
-        
-        
-
         for(int x= 0; x<graph_size; x++){
-            String user_equation2 = user_equation.replace("user_equation", "user_equation");
-            System.out.println(eval(user_equation));
+            String user_equation2 = user_equation.replace("x", Integer.toString(x));
+            Double res= eval(user_equation2);
+            int result = res.intValue();
+            if(result <graph_size){
+                graph[result][x] = "[]";
+            }
+        }
+
+        //System.out.print("\033[A\033[A\033[A\033[A");
+        for(int i= 0; i<graph_size; i++){
+            System.out.print("\033[A");
+        }
+            
+        for(int x= graph_size-1; x>=0; x--){
+            for(int y= 0; y<graph_size; y++){
+                System.out.print(graph[x][y]);
+            }
+            System.out.println();
         }
     }
 }
